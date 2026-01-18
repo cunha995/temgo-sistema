@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TemGo - Passageiro</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #111; color: white; overflow: hidden; }
+        .map-container { height: 60vh; background: url('https://user-images.githubusercontent.com/101030/118803126-69623b00-b88d-11eb-8924-42f025f1b51e.png'); background-size: cover; background-position: center; }
+        .request-area { height: 40vh; background: #fff; border-radius: 25px 25px 0 0; padding: 20px; color: #333; position: relative; box-shadow: 0 -5px 15px rgba(0,0,0,0.3); }
+        .logo-small { width: 120px; display: block; margin: 0 auto 15px; }
+        .input-group { background: #f4f4f4; border-radius: 10px; padding: 10px; margin-bottom: 10px; display: flex; align-items: center; }
+        input { border: none; background: transparent; width: 100%; padding: 10px; font-size: 16px; outline: none; }
+        .btn-confirmar { background: #FFD700; color: #000; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-confirmar:hover { background: #e6c200; }
+        .status-msg { font-size: 12px; color: #777; text-align: center; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="map-container"></div>
+    <div class="request-area">
+        <img src="https://raw.githubusercontent.com/cunha995/temgo-sistema/principal/1000452281.png" alt="TemGo" class="logo-small">
+        <div class="input-group">
+            <input type="text" placeholder="Para onde vamos?" id="destino">
+        </div>
+        <div class="input-group">
+            <input type="text" placeholder="Local de embarque" id="origem">
+        </div>
+        <button class="btn-confirmar" onclick="solicitar()">SOLICITAR TEMGO</button>
+        <p class="status-msg">Sua mobilidade em boas mãos.</p>
+    </div>
+    <script>
+        function solicitar() {
+            const dest = document.getElementById('destino').value;
+            if(!dest) return alert('Por favor, digite o destino.');
+            alert('Buscando motoristas próximos para ' + dest + '...');
+        }
+    </script>
+</body>
+</html>
