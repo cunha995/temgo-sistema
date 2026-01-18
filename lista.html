@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Administrativo - TemGo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        #conteudo-protegido { display: none; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00b894; padding-bottom: 20px; margin-bottom: 20px; }
+        h2 { color: #2d3436; margin: 0; }
+        .search-box { padding: 10px; width: 250px; border: 1px solid #ddd; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #2d3436; color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-edit { background: #0984e3; color: white; margin-right: 5px; }
+        .btn-del { background: #d63031; color: white; }
+        .btn-pdf { background: #2d3436; color: white; padding: 12px 20px; }
+        .btn:hover { opacity: 0.8; }
+        .nav-links { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div id="conteudo-protegido" class="container">
+    <div class="nav-links">
+        <a href="index.html" style="text-decoration: none; color: #00b894; font-weight: bold;">← Voltar ao Cadastro</a>
+    </div>
+
+    <div class="header">
+        <h2>Painel TemGo 2026</h2>
+        <input type="text" id="busca" class="search-box" placeholder="Pesquisar motorista..." onkeyup="filtrar()">
+        <button class="btn btn-pdf" onclick="gerarPDF()">Baixar Relatório PDF</button>
+    </div>
+    
+    <table id="tabela-motoristas">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Placa</th>
+                <th>Modelo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    const SENHA_CORRETA = "temGo2026";
+    let todosMotoristas = [];
+
+    window.onload = () => {
+        const pass = prompt("Senha TemGo:");
+        if (pass === SENHA_CORRETA) {
+            document.getElementById('conteudo-protegido').style.display = 'block';
+            carregar();
+        } else {
+            alert("Acesso Negado!");
+            window.location.href = "index.html";
+        }
+    };
+
+    async function carregar() {
+        const res = await fetch('/listar-motoristas');
+        todosMotoristas = await res.json();
+        exibir(todosMotoristas);
+    }
+
+    function exibir(lista) {
+        const corpo = document.querySelector('tbody');
+        corpo.innerHTML = "";
+        lista.forEach(m => {
+            corpo.innerHTML += `
+                <tr>
+                    <td>${m.nome}</td>
+                    <td>${m.placa_carro}</td>
+                    <td>${m.modelo_carro}</td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editar(${m.id}, '${m.nome}', '${m.placa_carro}', '${m.modelo_carro}')">Editar</button>
+                        <button class="btn btn-del" onclick="deletar(${m.id})">Excluir</button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    async function editar(id, nomeAntigo, placaAntiga, modeloAntigo) {
+        const novoNome = prompt("Novo Nome:", nomeAntigo);
+        const novaPlaca = prompt("Nova Placa:", placaAntiga);
+        const novoModelo = prompt("Novo Modelo:", modeloAntigo);
+
+        if (novoNome && novaPlaca) {
+            await fetch(`/editar-motorista/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome: novoNome, placa_carro: novaPlaca, modelo_carro: novoModelo })
+            });
+            carregar();
+        }
+    }
+
+    async function deletar(id) {
+        if (confirm("Excluir permanentemente?")) {
+            await fetch(`/excluir-motorista/${id}`, { method: 'DELETE' });
+            carregar();
+        }
+    }
+
+    function filtrar() {
+        const termo = document.getElementById('busca').value.toLowerCase();
+        const filtrados = todosMotoristas.filter(m => m.nome.toLowerCase().includes(termo));
+        exibir(filtrados);
+    }
+
+    function gerarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("Relatório de Motoristas - TemGo", 14, 15);
+        
+        const rows = todosMotoristas.map(m => [m.nome, m.placa_carro, m.modelo_carro]);
+        
+        doc.autoTable({
+            head: [['Nome', 'Placa', 'Modelo']],
+            body: rows,
+            startY: 20
+        });
+        
+        doc.save("motoristas-temgo.pdf");
+    }
+</script>
+</body>
+</html>

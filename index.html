@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro TemGo</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+        .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 350px; }
+        h2 { text-align: center; color: #2d3436; margin-bottom: 25px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dfe6e9; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background: #00b894; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background: #00a884; }
+        #msg { text-align: center; margin-top: 20px; color: #0984e3; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Novo Motorista</h2>
+        <input type="text" id="nome" placeholder="Nome do Motorista">
+        <input type="text" id="placa" placeholder="Placa do Carro">
+        <input type="text" id="modelo" placeholder="Modelo do Carro">
+        <button onclick="salvarNoBanco()">CADASTRAR</button>
+        <p id="msg"></p>
+    </div>
+
+    <script>
+        async function salvarNoBanco() {
+            const status = document.getElementById('msg');
+            status.innerText = "Processando...";
+
+            const dados = {
+                nome: document.getElementById('nome').value,
+                placa_carro: document.getElementById('placa').value,
+                modelo_carro: document.getElementById('modelo').value
+            };
+
+            try {
+                const response = await fetch('/cadastrar-motorista', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const res = await response.json();
+                status.innerText = res.mensagem || "Erro: " + res.erro;
+                
+                if(response.ok) {
+                    document.querySelectorAll('input').forEach(i => i.value = '');
+                }
+            } catch (err) {
+                status.innerText = "Erro ao conectar com o servidor!";
+            }
+        }
+    </script>
+</body>
+</html>
