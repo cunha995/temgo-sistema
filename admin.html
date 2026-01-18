@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TemGo - Passageiro</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background: #121212; }
+        
+        /* Cabeçalho */
+        .header {
+            height: 15vh; background: #1a1a1a; display: flex; align-items: center;
+            justify-content: center; border-bottom: 2px solid #FFD700;
+        }
+        .logo-text { color: #FFD700; font-size: 24px; font-weight: bold; margin: 0; }
+
+        /* Área do Mapa */
+        #map { height: 60vh; width: 100%; background: #242424; }
+
+        /* Painel Inferior */
+        .ui-panel {
+            height: 25vh; background: #1e1e1e; padding: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.5); border-radius: 20px 20px 0 0;
+        }
+        .search-box {
+            width: 90%; padding: 15px; border-radius: 10px; border: none;
+            background: #333; color: white; margin-bottom: 15px; font-size: 16px;
+        }
+        .btn-request {
+            width: 90%; padding: 18px; background: #FFD700; color: #000;
+            border: none; border-radius: 12px; font-weight: bold; font-size: 18px;
+            text-transform: uppercase; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <p class="logo-text">TemGO</p>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="ui-panel">
+        <input type="text" class="search-box" placeholder="Para onde vamos?">
+        <button class="btn-request" onclick="alert('Buscando motoristas próximos...')">SOLICITAR TEMGO</button>
+    </div>
+
+    <script>
+        // Inicializa o mapa focado no Brasil (Brasília)
+        var map = L.map('map').setView([-15.7938, -47.8827], 13);
+
+        // Usa o visual "Dark Mode" do mapa
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Tenta localizar o usuário
+        map.locate({setView: true, maxZoom: 16});
+
+        function onLocationFound(e) {
+            L.marker(e.latlng).addTo(map).bindPopup("Você está aqui").openPopup();
+        }
+        map.on('locationfound', onLocationFound);
+    </script>
+</body>
+</html>
