@@ -3,63 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Cadastro Motorista</title>
+    <title>TemGo - Cadastro Profissional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            margin: 0; padding: 20px; font-family: 'Segoe UI', sans-serif;
-            background: #121212; color: white; display: flex; flex-direction: column; align-items: center;
-        }
-        .container { width: 100%; max-width: 400px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo-text { font-size: 32px; font-weight: bold; color: #FFD700; margin-bottom: 5px; }
+        :root { --yellow: #FFD700; --bg: #121212; --input: #1e1e1e; }
+        body { margin: 0; padding: 20px; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 400px; padding-bottom: 40px; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .logo-text { font-size: 32px; font-weight: bold; color: var(--yellow); }
         
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #FFD700; font-size: 14px; font-weight: 600; }
-        input {
-            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333;
-            background: #1e1e1e; color: white; box-sizing: border-box; font-size: 16px;
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: var(--yellow); font-size: 14px; font-weight: 600; }
+        input[type="text"], input[type="password"] {
+            width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333;
+            background: var(--input); color: white; box-sizing: border-box; font-size: 16px;
         }
-        input:focus { border-color: #FFD700; outline: none; }
-        
+
+        /* Estilo para Upload de Documentos */
+        .file-upload {
+            position: relative; background: var(--input); border: 2px dashed #333;
+            border-radius: 10px; padding: 15px; text-align: center; cursor: pointer;
+            transition: 0.3s; margin-top: 5px;
+        }
+        .file-upload:hover { border-color: var(--yellow); }
+        .file-upload i { font-size: 24px; color: var(--yellow); margin-bottom: 8px; }
+        .file-upload p { margin: 0; font-size: 12px; color: #888; }
+        input[type="file"] { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
+
         .btn-register {
-            width: 100%; padding: 18px; background: #FFD700; color: black;
+            width: 100%; padding: 18px; background: var(--yellow); color: black;
             border: none; border-radius: 12px; font-weight: bold; font-size: 16px;
-            cursor: pointer; margin-top: 10px; text-transform: uppercase;
+            cursor: pointer; margin-top: 25px; text-transform: uppercase;
         }
-        .footer-link { display: block; text-align: center; margin-top: 25px; color: #bbb; text-decoration: none; font-size: 15px; }
-        .footer-link b { color: #FFD700; }
     </style>
 </head>
 <body>
+
     <div class="container">
         <div class="header">
             <div class="logo-text">TemGO</div>
-            <h2 style="margin: 0;">Seja um Parceiro</h2>
-            <p style="color: #888;">Preencha os dados para começar</p>
+            <h2 style="margin: 5px 0 0;">Cadastro de Parceiro</h2>
+            <p style="color: #666; font-size: 14px;">Envie seus documentos para análise</p>
         </div>
 
-        <form onsubmit="event.preventDefault(); alert('Cadastro enviado! Aguarde a definição da sua categoria pelo administrador.'); window.location.href='motorista_login.html'">
+        <form onsubmit="event.preventDefault(); alert('Documentos enviados com sucesso! Aguarde a aprovação da Central.'); window.location.href='motorista_login.html'">
+            
             <div class="form-group">
                 <label>Nome Completo</label>
-                <input type="text" placeholder="Seu nome" required>
+                <input type="text" placeholder="Como no documento" required>
             </div>
+
             <div class="form-group">
                 <label>CPF</label>
                 <input type="text" placeholder="000.000.000-00" required>
             </div>
+
             <div class="form-group">
-                <label>Modelo do Veículo</label>
-                <input type="text" placeholder="Ex: Toyota Corolla" required>
-            </div>
-            <div class="form-group">
-                <label>Placa</label>
-                <input type="text" placeholder="ABC-1234" required>
+                <label>Foto da CNH ou RG/CPF</label>
+                <div class="file-upload">
+                    <i class="fa-solid fa-address-card"></i>
+                    <p>Clique para tirar foto ou anexar</p>
+                    <input type="file" accept="image/*" capture="camera" required>
+                </div>
             </div>
 
-            <button type="submit" class="btn-register">ENVIAR CADASTRO</button>
+            <div class="form-group">
+                <label>Antecedentes Criminais</label>
+                <div class="file-upload">
+                    <i class="fa-solid fa-file-shield"></i>
+                    <p>Anexar certidão negativa (PDF ou Foto)</p>
+                    <input type="file" accept="image/*,.pdf" required>
+                </div>
+            </div>
+
+            <div style="margin: 25px 0 10px; border-top: 1px solid #222; padding-top: 15px;">
+                <h3 style="color: var(--yellow); font-size: 16px; margin: 0;">Dados do Veículo</h3>
+            </div>
+
+            <div class="form-group">
+                <label>Modelo e Placa</label>
+                <input type="text" placeholder="Ex: Corolla - ABC1D23" required>
+            </div>
+
+            <div class="form-group">
+                <label>Documento do Veículo (CRLV)</label>
+                <div class="file-upload">
+                    <i class="fa-solid fa-car"></i>
+                    <p>Foto do documento do carro</p>
+                    <input type="file" accept="image/*" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register">ENVIAR PARA ANÁLISE</button>
         </form>
-        
-        <a href="motorista_login.html" class="footer-link">Já tenho conta? <b>Entrar</b></a>
     </div>
+
 </body>
 </html>
