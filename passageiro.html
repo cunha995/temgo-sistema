@@ -2,93 +2,99 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Chamar Passageiro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TemGo - Passageiro</title>
     <style>
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background: #111; color: white; overflow: hidden; }
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; 
+            background-color: #121212; color: white; height: 100vh; display: flex; flex-direction: column;
+        }
 
-        /* Cabeçalho */
-        .header-passageiro {
-            height: 25vh;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-                        url('https://images.unsplash.com/photo-1449156001533-cb39c7310861?auto=format&fit=crop&w=1000&q=80');
-            background-size: cover; background-position: center;
+        /* Topo com degradê elegante ao invés de foto que pode falhar */
+        .header {
+            height: 20vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border-bottom: 3px solid #FFD700;
-        }
-        .logo-top { width: 120px; }
-
-        /* Mapa */
-        #map-container {
-            height: 55vh; background: #222; display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
+            border-bottom: 2px solid #FFD700;
         }
 
-        /* Overlay de Busca (Escondido por padrão) */
-        #searching-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 10;
+        .logo-img { max-width: 150px; height: auto; }
+        .logo-text { font-size: 24px; font-weight: bold; color: #FFD700; margin: 0; }
+
+        /* Área do Mapa - Cinza escuro para simular o Google Maps modo noturno */
+        #map-area {
+            flex: 1; background-color: #242424; position: relative;
+            display: flex; align-items: center; justify-content: center;
         }
 
+        /* Overlay de Busca */
+        #search-screen {
+            position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.9);
+            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
+        }
         .radar {
-            width: 100px; height: 100px; border: 4px solid #FFD700; border-radius: 50%;
-            border-top-color: transparent; animation: spin 1s linear infinite; margin-bottom: 20px;
+            width: 80px; height: 80px; border: 5px solid #FFD700; border-radius: 50%;
+            border-top-color: transparent; animation: spin 1s linear infinite;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Painel Inferior */
-        .bottom-panel {
-            height: 20vh; background: #1a1a1a; padding: 15px;
-            display: flex; flex-direction: column; align-items: center;
+        /* Painel de Controle Inferior */
+        .controls {
+            background: #1e1e1e; padding: 20px; border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
         }
-        .input-destination {
-            width: 90%; padding: 12px; border-radius: 8px; border: none;
-            margin-bottom: 10px; background: #333; color: white;
+
+        input {
+            width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #444;
+            background: #2b2b2b; color: white; font-size: 16px; margin-bottom: 15px;
         }
-        .btn-request {
-            width: 90%; padding: 15px; background: #FFD700; color: black;
-            border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+
+        .btn-call {
+            width: 100%; padding: 18px; border-radius: 12px; border: none;
+            background: #FFD700; color: black; font-weight: bold; font-size: 18px;
+            text-transform: uppercase; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <div class="header-passageiro">
-        <img src="1000452281.png" alt="TemGo" class="logo-top">
+    <div class="header">
+        <img src="1000452281.png" alt="TemGo" class="logo-img" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
+        <p id="alt-logo" class="logo-text" style="display:none;">TemGo</p>
+        <span style="font-size: 12px; color: #aaa; margin-top: 5px;">Mobilidade Urbana</span>
     </div>
 
-    <div id="map-container">
-        <div id="searching-overlay">
+    <div id="map-area">
+        <div id="search-screen">
             <div class="radar"></div>
-            <h3>Procurando motoristas próximos...</h3>
-            <p id="timer">Aguarde 10s</p>
+            <h3 style="color: #FFD700; margin-top: 20px;">Buscando motorista...</h3>
+            <p id="timer">Tempo estimado: 10s</p>
         </div>
-        <p style="color: #444;">[ Mapa em Tempo Real ]</p>
+        <div style="text-align: center; color: #555;">
+            <p>📍 Otimizando rota no mapa...</p>
+        </div>
     </div>
 
-    <div class="bottom-panel">
-        <input type="text" id="dest" class="input-destination" placeholder="Para onde vamos?">
-        <button class="btn-request" onclick="startSearch()">SOLICITAR TEMGO</button>
+    <div class="controls">
+        <input type="text" id="destino" placeholder="Para onde você quer ir?">
+        <button class="btn-call" onclick="solicitar()">Solicitar TemGo</button>
     </div>
 
     <script>
-        function startSearch() {
-            const dest = document.getElementById('dest').value;
-            if(!dest) { alert("Por favor, digite um destino!"); return; }
+        function solicitar() {
+            const dest = document.getElementById('destino').value;
+            if(!dest) { alert("Por favor, informe o destino."); return; }
             
-            document.getElementById('searching-overlay').style.display = 'flex';
-            let timeLeft = 10;
-            const timerElement = document.getElementById('timer');
-
-            const countdown = setInterval(() => {
-                timeLeft--;
-                timerElement.innerText = `Aguarde ${timeLeft}s`;
-                if (timeLeft <= 0) {
-                    clearInterval(countdown);
-                    alert("Motorista encontrado! Placa: ABC-1234");
-                    document.getElementById('searching-overlay').style.display = 'none';
+            document.getElementById('search-screen').style.display = 'flex';
+            let tempo = 10;
+            const intervalo = setInterval(() => {
+                tempo--;
+                document.getElementById('timer').innerText = `Tempo estimado: ${tempo}s`;
+                if(tempo <= 0) {
+                    clearInterval(intervalo);
+                    alert("Motorista a caminho! Veículo: Sedan Branco");
+                    document.getElementById('search-screen').style.display = 'none';
                 }
             }, 1000);
         }
