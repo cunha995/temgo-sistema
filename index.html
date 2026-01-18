@@ -2,55 +2,53 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro TemGo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TemGo - Bem-vindo</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
-        .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 350px; }
-        h2 { text-align: center; color: #2d3436; margin-bottom: 25px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dfe6e9; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #00b894; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        button:hover { background: #00a884; }
-        #msg { text-align: center; margin-top: 20px; color: #0984e3; font-weight: bold; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1449156001533-cb39c7310861?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .logo { width: 220px; margin-bottom: 30px; }
+        .container { text-align: center; padding: 20px; }
+        .btn {
+            display: block;
+            width: 280px;
+            padding: 15px;
+            margin: 15px auto;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+        .btn-passenger { background: #FFD700; color: black; } /* Amarelo TemGo */
+        .btn-driver { background: transparent; color: white; border: 2px solid white; }
+        .btn:hover { transform: scale(1.05); }
+        .slogan { font-style: italic; margin-top: 20px; color: #ccc; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Novo Motorista</h2>
-        <input type="text" id="nome" placeholder="Nome do Motorista">
-        <input type="text" id="placa" placeholder="Placa do Carro">
-        <input type="text" id="modelo" placeholder="Modelo do Carro">
-        <button onclick="salvarNoBanco()">CADASTRAR</button>
-        <p id="msg"></p>
+
+    <div class="container">
+        <img src="1000452281.png" alt="TemGo" class="logo">
+        
+        <h2>Como você deseja usar o app hoje?</h2>
+        
+        <a href="passageiro.html" class="btn btn-passenger">SOU PASSAGEIRO</a>
+        <a href="motorista_login.html" class="btn btn-driver">SOU MOTORISTA</a>
+        
+        <p class="slogan">TemGo: Sua mobilidade em boas mãos.</p>
     </div>
 
-    <script>
-        async function salvarNoBanco() {
-            const status = document.getElementById('msg');
-            status.innerText = "Processando...";
-
-            const dados = {
-                nome: document.getElementById('nome').value,
-                placa_carro: document.getElementById('placa').value,
-                modelo_carro: document.getElementById('modelo').value
-            };
-
-            try {
-                const response = await fetch('/cadastrar-motorista', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
-
-                const res = await response.json();
-                status.innerText = res.mensagem || "Erro: " + res.erro;
-                
-                if(response.ok) {
-                    document.querySelectorAll('input').forEach(i => i.value = '');
-                }
-            } catch (err) {
-                status.innerText = "Erro ao conectar com o servidor!";
-            }
-        }
-    </script>
 </body>
 </html>
