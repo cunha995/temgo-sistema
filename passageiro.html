@@ -2,101 +2,89 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TemGo - Passageiro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TemGo - Mapa Real</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&callback=initMap" async defer></script>
     <style>
-        * { box-sizing: border-box; }
-        body { 
-            margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; 
-            background-color: #121212; color: white; height: 100vh; display: flex; flex-direction: column;
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Roboto', sans-serif; }
+        
+        #map {
+            height: 70vh; /* Mapa ocupa a maior parte da tela */
+            width: 100%;
+            background: #e5e3df;
         }
 
-        /* Topo com degradê elegante ao invés de foto que pode falhar */
-        .header {
-            height: 20vh;
-            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border-bottom: 2px solid #FFD700;
+        .ui-panel {
+            height: 30vh;
+            background: #ffffff;
+            padding: 20px;
+            border-top: 2px solid #FFD700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
         }
 
-        .logo-img { max-width: 150px; height: auto; }
-        .logo-text { font-size: 24px; font-weight: bold; color: #FFD700; margin: 0; }
-
-        /* Área do Mapa - Cinza escuro para simular o Google Maps modo noturno */
-        #map-area {
-            flex: 1; background-color: #242424; position: relative;
-            display: flex; align-items: center; justify-content: center;
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
         }
 
-        /* Overlay de Busca */
-        #search-screen {
-            position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.9);
-            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
-        }
-        .radar {
-            width: 80px; height: 80px; border: 5px solid #FFD700; border-radius: 50%;
-            border-top-color: transparent; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Painel de Controle Inferior */
-        .controls {
-            background: #1e1e1e; padding: 20px; border-radius: 20px 20px 0 0;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-        }
-
-        input {
-            width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #444;
-            background: #2b2b2b; color: white; font-size: 16px; margin-bottom: 15px;
-        }
-
-        .btn-call {
-            width: 100%; padding: 18px; border-radius: 12px; border: none;
-            background: #FFD700; color: black; font-weight: bold; font-size: 18px;
-            text-transform: uppercase; cursor: pointer;
+        .btn-request {
+            width: 100%;
+            padding: 18px;
+            background: #FFD700;
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 18px;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="1000452281.png" alt="TemGo" class="logo-img" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
-        <p id="alt-logo" class="logo-text" style="display:none;">TemGo</p>
-        <span style="font-size: 12px; color: #aaa; margin-top: 5px;">Mobilidade Urbana</span>
-    </div>
+    <div id="map"></div>
 
-    <div id="map-area">
-        <div id="search-screen">
-            <div class="radar"></div>
-            <h3 style="color: #FFD700; margin-top: 20px;">Buscando motorista...</h3>
-            <p id="timer">Tempo estimado: 10s</p>
-        </div>
-        <div style="text-align: center; color: #555;">
-            <p>📍 Otimizando rota no mapa...</p>
-        </div>
-    </div>
-
-    <div class="controls">
-        <input type="text" id="destino" placeholder="Para onde você quer ir?">
-        <button class="btn-call" onclick="solicitar()">Solicitar TemGo</button>
+    <div class="ui-panel">
+        <input type="text" class="search-box" placeholder="Para onde vamos?">
+        <button class="btn-request" onclick="alert('Solicitando motorista no Google Maps...')">Solicitar TemGo</button>
     </div>
 
     <script>
-        function solicitar() {
-            const dest = document.getElementById('destino').value;
-            if(!dest) { alert("Por favor, informe o destino."); return; }
+        let map;
+        function initMap() {
+            // Coordenadas padrão (centraliza no Brasil caso o GPS falhe)
+            const defaultPos = { lat: -15.7938, lng: -47.8827 };
             
-            document.getElementById('search-screen').style.display = 'flex';
-            let tempo = 10;
-            const intervalo = setInterval(() => {
-                tempo--;
-                document.getElementById('timer').innerText = `Tempo estimado: ${tempo}s`;
-                if(tempo <= 0) {
-                    clearInterval(intervalo);
-                    alert("Motorista a caminho! Veículo: Sedan Branco");
-                    document.getElementById('search-screen').style.display = 'none';
-                }
-            }, 1000);
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: defaultPos,
+                disableDefaultUI: false, // Mostra os botões de zoom padrão do Google
+                mapTypeControl: false
+            });
+
+            // Tenta pegar a localização real do celular
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const userPos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    map.setCenter(userPos);
+                    // Coloca o pino padrão do Google
+                    new google.maps.Marker({
+                        position: userPos,
+                        map: map,
+                        title: "Você está aqui"
+                    });
+                });
+            }
         }
     </script>
 </body>
