@@ -3,71 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Mobilidade</title>
+    <title>TemGo - Menu</title>
     <style>
-        /* Tela de Carregamento (Splash) */
-        #splash {
-            position: fixed;
-            width: 100%;
-            height: 100vh;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 1s ease;
-        }
-        .logo-splash { width: 250px; animation: pulse 2s infinite; }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Menu Principal (Fica escondido no início) */
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1449156001533-cb39c7310861?auto=format&fit=crop&w=1350&q=80');
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            /* Imagem de fundo com escurecimento para destacar os botões */
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1449156001533-cb39c7310861?auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: white;
+        }
+
+        .logo-container {
+            margin-bottom: 50px;
             text-align: center;
         }
-        .btn {
-            display: block; width: 280px; padding: 15px; margin: 15px auto;
-            border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 18px;
+
+        .logo {
+            width: 220px; /* Tamanho da sua logo */
+            filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.5));
         }
-        .btn-yellow { background: #FFD700; color: black; }
-        .btn-outline { background: transparent; color: white; border: 2px solid white; }
-    </style>
-</head>
-<body>
 
-    <div id="splash">
-        <img src="1000452281.png" class="logo-splash" alt="TemGo">
-    </div>
+        h2 {
+            font-weight: 300;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
 
-    <div id="main-content">
-        <img src="1000452281.png" style="width: 180px; margin-bottom: 20px;">
-        <h2>Como deseja usar o app hoje?</h2>
-        <a href="passageiro.html" class="btn btn-yellow">SOU PASSAGEIRO</a>
-        <a href="motorista_login.html" class="btn btn-outline">SOU MOTORISTA</a>
-    </div>
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 320px;
+        }
 
-    <script>
-        // Faz a Splash sumir após 3 segundos
-        setTimeout(() => {
-            const splash = document.getElementById('splash');
-            splash.style.opacity = '0';
-            setTimeout(() => { splash.style.display = 'none'; }, 1000);
-        }, 3000);
-    </script>
-</body>
-</html>
+        .btn {
+            padding: 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Botão Amarelo TemGo */
+        .btn-passageiro {
+            background-color: #FFD700;
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Botão Motorista (Borda Branca) */
+        .btn-motorista {
+            background-color: rgba
