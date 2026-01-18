@@ -3,50 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Cadastro</title>
+    <title>TemGo - Cadastro Motorista</title>
     <style>
         body {
             margin: 0; padding: 20px; font-family: 'Segoe UI', sans-serif;
             background: #121212; color: white; display: flex; flex-direction: column; align-items: center;
         }
         .container { width: 100%; max-width: 400px; }
-        .header { text-align: center; margin-bottom: 25px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo-text { font-size: 32px; font-weight: bold; color: #FFD700; margin-bottom: 5px; }
         
-        /* Fallback para a logo caso a imagem não carregue */
-        .logo { width: 130px; margin-bottom: 10px; }
-        .logo-text { font-size: 28px; font-weight: bold; color: #FFD700; display: block; }
-
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #FFD700; font-size: 14px; }
-        
-        input, select {
-            width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333;
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #FFD700; font-size: 14px; font-weight: 600; }
+        input {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333;
             background: #1e1e1e; color: white; box-sizing: border-box; font-size: 16px;
         }
+        input:focus { border-color: #FFD700; outline: none; }
         
-        .btn-send {
+        .btn-register {
             width: 100%; padding: 18px; background: #FFD700; color: black;
             border: none; border-radius: 12px; font-weight: bold; font-size: 16px;
-            cursor: pointer; margin-top: 20px; text-transform: uppercase;
+            cursor: pointer; margin-top: 10px; text-transform: uppercase;
         }
-
-        .login-link {
-            display: block; text-align: center; margin-top: 25px; 
-            color: #bbb; text-decoration: none; font-size: 15px;
-        }
-        .login-link b { color: #FFD700; }
+        .footer-link { display: block; text-align: center; margin-top: 25px; color: #bbb; text-decoration: none; font-size: 15px; }
+        .footer-link b { color: #FFD700; }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="header">
-            <img src="1000452281.png" alt="TemGo" class="logo" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
-            <span id="alt-logo" class="logo-text" style="display:none;">TemGO</span>
-            <h2 style="margin: 10px 0 0;">Seja um Parceiro</h2>
+            <div class="logo-text">TemGO</div>
+            <h2 style="margin: 0;">Seja um Parceiro</h2>
+            <p style="color: #888;">Preencha os dados para começar</p>
         </div>
 
-        <form onsubmit="event.preventDefault(); alert('Cadastro enviado! Agora faça login.'); window.location.href='motorista_login.html'">
+        <form onsubmit="event.preventDefault(); alert('Cadastro enviado! Aguarde a definição da sua categoria pelo administrador.'); window.location.href='motorista_login.html'">
             <div class="form-group">
                 <label>Nome Completo</label>
                 <input type="text" placeholder="Seu nome" required>
@@ -63,19 +55,11 @@
                 <label>Placa</label>
                 <input type="text" placeholder="ABC-1234" required>
             </div>
-            <div class="form-group">
-                <label>Categoria</label>
-                <select>
-                    <option>TemGo Comum</option>
-                    <option>TemGo Premium</option>
-                </select>
-            </div>
 
-            <button type="submit" class="btn-send">ENVIAR CADASTRO</button>
+            <button type="submit" class="btn-register">ENVIAR CADASTRO</button>
         </form>
-
-        <a href="motorista_login.html" class="login-link">Já tenho conta? <b>Entrar</b></a>
+        
+        <a href="motorista_login.html" class="footer-link">Já tenho conta? <b>Entrar</b></a>
     </div>
-
 </body>
 </html>
