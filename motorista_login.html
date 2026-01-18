@@ -3,53 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Motorista</title>
+    <title>TemGo - Cadastro Motorista</title>
     <style>
         body {
-            margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1000&auto=format&fit=crop');
-            background-size: cover; background-position: center;
-            height: 100vh; display: flex; align-items: center; justify-content: center; color: white;
+            margin: 0; padding: 20px; font-family: 'Segoe UI', sans-serif;
+            background: #121212; color: white; display: flex; flex-direction: column; align-items: center;
         }
-        .card {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px);
-            padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2);
-            width: 85%; max-width: 360px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .container { width: 100%; max-width: 400px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { width: 120px; margin-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #FFD700; font-size: 14px; }
+        input, select {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333;
+            background: #1e1e1e; color: white; box-sizing: border-box;
         }
-        .logo { width: 140px; margin-bottom: 15px; }
-        input {
-            width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px;
-            border: none; background: rgba(255,255,255,0.9); box-sizing: border-box; font-size: 16px;
-        }
-        .btn-yellow {
+        
+        .btn-register {
             width: 100%; padding: 16px; background: #FFD700; color: black;
             border: none; border-radius: 10px; font-weight: bold; font-size: 16px;
-            cursor: pointer; margin-top: 15px; text-transform: uppercase;
+            cursor: pointer; margin-top: 20px; text-transform: uppercase;
         }
-        .signup-text { margin-top: 20px; font-size: 14px; color: #eee; }
-        .signup-link { color: #FFD700; text-decoration: none; font-weight: bold; }
-        .back { display: block; margin-top: 25px; color: #bbb; text-decoration: none; font-size: 13px; }
+        .back { display: block; text-align: center; margin-top: 20px; color: #bbb; text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <img src="1000452281.png" alt="TemGo" class="logo" onerror="this.style.display='none'; document.getElementById('alt-text').style.display='block'">
-        <h2 id="alt-text" style="display:none; color:#FFD700; margin-bottom:10px;">TemGo</h2>
-        
-        <p style="margin-bottom: 20px; font-weight: 300;">Acesse sua conta ou cadastre-se</p>
-        
-        <input type="email" placeholder="E-mail ou CPF">
-        <input type="password" placeholder="Senha">
-        
-        <button class="btn-yellow">ENTRAR NO PAINEL</button>
-        
-        <div class="signup-text">
-            Ainda não é parceiro? <br>
-            <a href="motorista_cadastro.html" class="signup-link">FAZER CADASTRO AGORA</a>
+    <div class="container">
+        <div class="header">
+            <img src="1000452281.png" alt="TemGo" class="logo" onerror="this.style.display='none'">
+            <h2 style="color:#FFD700; margin:0;">Seja um Parceiro</h2>
+            <p>Preencha os dados para começar</p>
         </div>
+
+        <form onsubmit="event.preventDefault(); alert('Cadastro enviado para análise!'); window.location.href='motorista_login.html'">
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+                <label>CPF</label>
+                <input type="text" placeholder="000.000.000-00" required>
+            </div>
+            <div class="form-group">
+                <label>Modelo do Veículo</label>
+                <input type="text" placeholder="Ex: Toyota Corolla" required>
+            </div>
+            <div class="form-group">
+                <label>Placa</label>
+                <input type="text" placeholder="ABC-1234" required>
+            </div>
+            <div class="form-group">
+                <label>Categoria</label>
+                <select>
+                    <option>TemGo Comum</option>
+                    <option>TemGo Premium</option>
+                    <option>TemGo Entrega</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-register">Enviar Cadastro</button>
+        </form>
         
-        <a href="index.html" class="back">← Voltar ao início</a>
+        <a href="motorista_login.html" class="back">Já tenho conta? Entrar</a>
     </div>
 </body>
 </html>
