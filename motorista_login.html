@@ -3,87 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Login Motorista</title>
+    <title>TemGo - Motorista</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            /* Imagem de mapa urbano profissional ao fundo */
-            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), 
+            margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
                         url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1000&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+            background-size: cover; background-position: center;
+            height: 100vh; display: flex; align-items: center; justify-content: center; color: white;
         }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            width: 85%;
-            max-width: 350px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .card {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px);
+            padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 85%; max-width: 360px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-
-        .logo-pequena {
-            width: 150px;
-            margin-bottom: 20px;
-        }
-
+        .logo { width: 140px; margin-bottom: 15px; }
         input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: none;
-            background: rgba(255,255,255,0.9);
-            box-sizing: border-box;
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px;
+            border: none; background: rgba(255,255,255,0.9); box-sizing: border-box; font-size: 16px;
         }
-
-        .btn-login {
-            width: 100%;
-            padding: 15px;
-            background: #FFD700;
-            color: black;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 15px;
+        .btn-yellow {
+            width: 100%; padding: 16px; background: #FFD700; color: black;
+            border: none; border-radius: 10px; font-weight: bold; font-size: 16px;
+            cursor: pointer; margin-top: 15px; text-transform: uppercase;
         }
-
-        .back-link {
-            display: block;
-            margin-top: 20px;
-            color: #ccc;
-            text-decoration: none;
-            font-size: 14px;
-        }
+        .signup-text { margin-top: 20px; font-size: 14px; color: #eee; }
+        .signup-link { color: #FFD700; text-decoration: none; font-weight: bold; }
+        .back { display: block; margin-top: 25px; color: #bbb; text-decoration: none; font-size: 13px; }
     </style>
 </head>
 <body>
-
-    <div class="login-card">
-        <img src="1000452281.png" alt="TemGo" class="logo-pequena">
+    <div class="card">
+        <img src="1000452281.png" alt="TemGo" class="logo" onerror="this.style.display='none'; document.getElementById('alt-text').style.display='block'">
+        <h2 id="alt-text" style="display:none; color:#FFD700; margin-bottom:10px;">TemGo</h2>
         
-        <h3>Área do Motorista</h3>
+        <p style="margin-bottom: 20px; font-weight: 300;">Acesse sua conta ou cadastre-se</p>
         
         <input type="email" placeholder="E-mail ou CPF">
         <input type="password" placeholder="Senha">
         
-        <button class="btn-login">ENTRAR NO PAINEL</button>
+        <button class="btn-yellow">ENTRAR NO PAINEL</button>
         
-        <a href="index.html" class="back-link">← Voltar ao início</a>
+        <div class="signup-text">
+            Ainda não é parceiro? <br>
+            <a href="motorista_cadastro.html" class="signup-link">FAZER CADASTRO AGORA</a>
+        </div>
+        
+        <a href="index.html" class="back">← Voltar ao início</a>
     </div>
-
 </body>
 </html>
