@@ -3,122 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Central de Créditos</title>
+    <title>TemGo - Gestão Profissional</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --yellow: #FFD700; --dark: #0a0a0a; --card: #181818; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; display: flex; }
-        
-        .sidebar { width: 260px; height: 100vh; background: #111; border-right: 1px solid #222; position: fixed; padding: 20px; }
-        .main { flex: 1; margin-left: 260px; padding: 30px; }
-        
-        .section { background: var(--card); padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #222; }
-        h2 { color: var(--yellow); margin-top: 0; }
+        :root { --yellow: #FFD700; --bg: #050505; --card: #121212; --text: #e0e0e0; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; }
 
+        /* Sidebar Moderna */
+        .sidebar { 
+            width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #222; 
+            position: fixed; padding: 30px 20px; box-sizing: border-box;
+        }
+        .logo-box { text-align: center; margin-bottom: 40px; }
+        .logo-text { font-size: 26px; font-weight: 900; color: var(--yellow); letter-spacing: -1px; }
+        
+        .menu-group { margin-bottom: 25px; }
+        .menu-label { font-size: 11px; color: #555; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .nav-item { 
+            padding: 14px 18px; border-radius: 12px; cursor: pointer; color: #aaa; 
+            display: flex; align-items: center; gap: 12px; transition: 0.3s; margin-bottom: 5px;
+        }
+        .nav-item:hover, .active { background: var(--yellow); color: #000; font-weight: 600; }
+
+        /* Main Content area */
+        .main { flex: 1; margin-left: 280px; padding: 40px; }
+        
+        /* Dashboard Stats */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .card-stat { 
+            background: var(--card); padding: 25px; border-radius: 20px; 
+            border: 1px solid #222; position: relative; overflow: hidden;
+        }
+        .card-stat::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--yellow); }
+        .card-stat h3 { margin: 0; font-size: 13px; color: #777; font-weight: 500; }
+        .card-stat p { margin: 10px 0 0; font-size: 24px; font-weight: 700; }
+        .trend { font-size: 12px; color: #00ff00; margin-top: 5px; display: block; }
+
+        /* Tables and Sections */
+        .section-container { background: var(--card); border-radius: 24px; padding: 30px; border: 1px solid #222; margin-bottom: 30px; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; color: #888; border-bottom: 2px solid #333; }
-        td { padding: 12px; border-bottom: 1px solid #222; }
+        th { text-align: left; font-size: 12px; color: #555; text-transform: uppercase; padding: 15px; border-bottom: 1px solid #222; }
+        td { padding: 18px 15px; border-bottom: 1px solid #1a1a1a; font-size: 14px; }
+        
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .avatar-mini { width: 35px; height: 35px; background: #333; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
 
-        .saldo-positivo { color: #00ff00; font-weight: bold; }
-        .saldo-negativo { color: #ff4444; font-weight: bold; }
-
-        .input-credito {
-            width: 80px; padding: 8px; border-radius: 5px; border: 1px solid #444;
-            background: #000; color: var(--yellow); font-weight: bold;
-        }
-        .btn-add {
-            background: var(--yellow); color: black; border: none; padding: 8px 15px;
-            border-radius: 6px; font-weight: bold; cursor: pointer; margin-left: 5px;
-        }
-        .status-block { font-size: 12px; padding: 4px 8px; border-radius: 4px; background: #444; }
+        /* Créditos */
+        .credit-badge { background: #000; color: var(--yellow); padding: 6px 12px; border-radius: 8px; font-weight: bold; font-family: monospace; border: 1px solid #333; }
+        .btn-action { background: #1a1a1a; border: 1px solid #333; color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 12px; }
+        .btn-action:hover { border-color: var(--yellow); color: var(--yellow); }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2 style="color:var(--yellow)">TemGO ADMIN</h2>
-        <p style="color:#666">Gestão de Créditos</p>
-        <hr border="0" height="1" bgcolor="#222">
-        <div style="margin-top:20px; color:var(--yellow)">● Sistema Ativo</div>
-    </div>
-
-    <div class="main">
-        <h1>Controle Financeiro de Motoristas</h1>
-
-        <div class="section">
-            <h2>Gestão de Saldo e Bloqueio</h2>
-            <p style="color:#aaa; font-size:14px; margin-bottom:20px;">
-                * Motoristas com saldo inferior a R$ 10,00 são automaticamente impedidos de receber novas corridas.
-            </p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Motorista</th>
-                        <th>Saldo Atual</th>
-                        <th>Status para Corridas</th>
-                        <th>Adicionar Crédito (R$)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Carlos Alberto Oliveira</td>
-                        <td><span class="saldo-positivo" id="saldo-1">R$ 45,00</span></td>
-                        <td><span id="status-1" class="status-block" style="color:#00ff00">LIBERADO</span></td>
-                        <td>
-                            <input type="number" id="val-1" class="input-credito" placeholder="0,00">
-                            <button class="btn-add" onclick="adicionarCredito(1)">INSERIR</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Fernando Souza Rocha</td>
-                        <td><span class="saldo-negativo" id="saldo-2">R$ 2,50</span></td>
-                        <td><span id="status-2" class="status-block" style="color:#ff4444">BLOQUEADO</span></td>
-                        <td>
-                            <input type="number" id="val-2" class="input-credito" placeholder="0,00">
-                            <button class="btn-add" onclick="adicionarCredito(2)">INSERIR</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <aside class="sidebar">
+        <div class="logo-box">
+            <span class="logo-text">TemGO</span>
+            <p style="font-size: 10px; color: #444; margin: 0;">CONTROL TOWER v2.0</p>
         </div>
 
-        <div class="section">
-            <h2>Histórico de Recargas Recentes</h2>
-            <table style="font-size:13px; color:#aaa;">
-                <tr><td>Hoje 14:20</td><td>Recarga de R$ 50,00 para Carlos Alberto</td></tr>
-                <tr><td>Ontem 18:05</td><td>Recarga de R$ 100,00 para Juliana Lima</td></tr>
-            </table>
+        <div class="menu-group">
+            <span class="menu-label">Principal</span>
+            <div class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Visão Geral</div>
+            <div class="nav-item"><i class="fa-solid fa-car"></i> Frota Ativa</div>
         </div>
-    </div>
 
-    <script>
-        function adicionarCredito(id) {
-            const input = document.getElementById('val-' + id);
-            const valorAdicionado = parseFloat(input.value);
-            
-            if (isNaN(valorAdicionado) || valorAdicionado <= 0) {
-                alert("Insira um valor válido para o crédito.");
-                return;
-            }
+        <div class="menu-group">
+            <span class="menu-label">Financeiro</span>
+            <div class="nav-item"><i class="fa-solid fa-wallet"></i> Créditos Motorista</div>
+            <div class="nav-item"><i class="fa-solid fa-file-invoice-dollar"></i> Relatórios</div>
+        </div>
 
-            const saldoElemento = document.getElementById('saldo-' + id);
-            const statusElemento = document.getElementById('status-' + id);
-            
-            // Simulação de cálculo de saldo
-            let saldoAtual = parseFloat(saldoElemento.innerText.replace('R$ ', '').replace(',', '.'));
-            let novoSaldo = saldoAtual + valorAdicionado;
+        <button onclick="location.reload()" style="background: none; border: 1px solid #333; color: #ff4444; width: 100%; padding: 12px; border-radius: 12px; cursor: pointer; margin-top: 50px;">
+            <i class="fa-solid fa-power-off"></i> Encerrar Sessão
+        </button>
+    </aside>
 
-            saldoElemento.innerText = "R$ " + novoSaldo.toFixed(2).replace('.', ',');
-            input.value = "";
+    <main class="main">
+        <header style="margin-bottom: 40px;">
+            <h1 style="font-size: 28px; margin: 0;">Seja bem-vindo, Administrador</h1>
+            <p style="color: #666; margin: 5px 0 0;">Aqui está o que está acontecendo na plataforma hoje.</p>
+        </header>
 
-            // Lógica de Desbloqueio Automático
-            if (novoSaldo >= 10) {
-                saldoElemento.className = "saldo-positivo";
-                statusElemento.innerText = "LIBERADO";
-                statusElemento.style.color = "#00ff00";
-            }
-
-            alert("Crédito inserido com sucesso pela central!");
-        }
-    </script>
-</body>
-</html>
+        <div class="stats-row">
+            <div class="card-stat">
+                <h3>FATURAMENTO BRUTO</h3>
+                <p>R$ 4.250,60</p>
+                <span class="trend">↑ 12% vs
