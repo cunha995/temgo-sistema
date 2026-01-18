@@ -2,90 +2,69 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Mapa Real</title>
-    <script src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&callback=initMap" async defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TemGo - Passageiro</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Roboto', sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background: #121212; }
         
-        #map {
-            height: 70vh; /* Mapa ocupa a maior parte da tela */
-            width: 100%;
-            background: #e5e3df;
+        /* Cabeçalho */
+        .header {
+            height: 15vh; background: #1a1a1a; display: flex; align-items: center;
+            justify-content: center; border-bottom: 2px solid #FFD700;
         }
+        .logo-text { color: #FFD700; font-size: 24px; font-weight: bold; margin: 0; }
 
+        /* Área do Mapa */
+        #map { height: 60vh; width: 100%; background: #242424; }
+
+        /* Painel Inferior */
         .ui-panel {
-            height: 30vh;
-            background: #ffffff;
-            padding: 20px;
-            border-top: 2px solid #FFD700;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            height: 25vh; background: #1e1e1e; padding: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.5); border-radius: 20px 20px 0 0;
         }
-
         .search-box {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 16px;
+            width: 90%; padding: 15px; border-radius: 10px; border: none;
+            background: #333; color: white; margin-bottom: 15px; font-size: 16px;
         }
-
         .btn-request {
-            width: 100%;
-            padding: 18px;
-            background: #FFD700;
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 18px;
-            text-transform: uppercase;
+            width: 90%; padding: 18px; background: #FFD700; color: #000;
+            border: none; border-radius: 12px; font-weight: bold; font-size: 18px;
+            text-transform: uppercase; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
+    <div class="header">
+        <p class="logo-text">TemGO</p>
+    </div>
+
     <div id="map"></div>
 
     <div class="ui-panel">
         <input type="text" class="search-box" placeholder="Para onde vamos?">
-        <button class="btn-request" onclick="alert('Solicitando motorista no Google Maps...')">Solicitar TemGo</button>
+        <button class="btn-request" onclick="alert('Buscando motoristas próximos...')">SOLICITAR TEMGO</button>
     </div>
 
     <script>
-        let map;
-        function initMap() {
-            // Coordenadas padrão (centraliza no Brasil caso o GPS falhe)
-            const defaultPos = { lat: -15.7938, lng: -47.8827 };
-            
-            map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 15,
-                center: defaultPos,
-                disableDefaultUI: false, // Mostra os botões de zoom padrão do Google
-                mapTypeControl: false
-            });
+        // Inicializa o mapa focado no Brasil (Brasília)
+        var map = L.map('map').setView([-15.7938, -47.8827], 13);
 
-            // Tenta pegar a localização real do celular
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const userPos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    map.setCenter(userPos);
-                    // Coloca o pino padrão do Google
-                    new google.maps.Marker({
-                        position: userPos,
-                        map: map,
-                        title: "Você está aqui"
-                    });
-                });
-            }
+        // Usa o visual "Dark Mode" do mapa
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Tenta localizar o usuário
+        map.locate({setView: true, maxZoom: 16});
+
+        function onLocationFound(e) {
+            L.marker(e.latlng).addTo(map).bindPopup("Você está aqui").openPopup();
         }
+        map.on('locationfound', onLocationFound);
     </script>
 </body>
 </html>
