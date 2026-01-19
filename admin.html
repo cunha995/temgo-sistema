@@ -1,146 +1,70 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Central de Comando</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --yellow: #FFD700; --bg: #0a0a0a; --card: #121212; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: white; display: flex; }
-        
-        /* Sidebar */
-        .sidebar { width: 260px; height: 100vh; background: #000; border-right: 1px solid #222; position: fixed; padding: 25px; box-sizing: border-box; }
-        .nav-item { padding: 12px; border-radius: 10px; cursor: pointer; color: #888; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .nav-item:hover, .active { background: var(--yellow); color: #000; font-weight: bold; }
+<div class="section-container">
+    <div class="table-header">
+        <h2 style="font-size: 18px; margin: 0; color: #FFD700;">
+            <i class="fa-solid fa-user-check"></i> Novos Cadastros para Aprovação
+        </h2>
+    </div>
 
-        /* Main Content */
-        .main { flex: 1; margin-left: 260px; padding: 30px; }
-        .grid-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .kpi-card { background: var(--card); padding: 20px; border-radius: 15px; border-left: 4px solid var(--yellow); }
-        .kpi-card h3 { margin: 0; font-size: 12px; color: #666; text-transform: uppercase; }
-        .kpi-card p { margin: 10px 0 0; font-size: 22px; font-weight: bold; }
+    <table>
+        <thead>
+            <tr>
+                <th>Motorista / Veículo</th>
+                <th>Documentos</th>
+                <th>Status Atual</th>
+                <th>Ação Administrativa</th>
+            </tr>
+        </thead>
+        <tbody id="fila-aprovacao">
+            <tr>
+                <td>
+                    <div class="user-info">
+                        <div class="avatar-mini"><i class="fa-solid fa-user"></i></div>
+                        <div>
+                            <b>Ricardo Alves</b><br>
+                            <span style="font-size:12px; color:#666;">Honda Civic (XYZ-9876)</span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <button class="btn-action" onclick="verDocumentos('Ricardo Alves')">
+                        <i class="fa-solid fa-file-image"></i> Ver Fotos
+                    </button>
+                </td>
+                <td>
+                    <span class="credit-badge" style="color: #FFD700; border-color: #333;">AGUARDANDO</span>
+                </td>
+                <td>
+                    <button class="btn-action" 
+                            style="background: #FFD700; color: #000; font-weight: bold; border: none;" 
+                            onclick="aprovar(this, 'Ricardo Alves')">
+                        ACEITAR MOTORISTA
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-        /* Mapa de Monitoramento */
-        #map-monitor { height: 400px; width: 100%; border-radius: 20px; border: 1px solid #333; margin-bottom: 25px; }
+<script>
+    function verDocumentos(nome) {
+        alert("Abrindo pasta de documentos de: " + nome + "\n(CNH, Antecedentes e CRLV)");
+        // Aqui no futuro você conectará ao link das imagens enviadas
+    }
 
-        /* Listas de Cadastro */
-        .section { background: var(--card); padding: 25px; border-radius: 20px; margin-bottom: 25px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { text-align: left; color: #555; font-size: 12px; padding: 12px; border-bottom: 1px solid #222; }
-        td { padding: 15px 12px; border-bottom: 1px solid #1a1a1a; font-size: 14px; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-        .online { background: rgba(0,255,0,0.1); color: #00ff00; }
-        .busy { background: rgba(255,215,0,0.1); color: var(--yellow); }
-    </style>
-</head>
-<body>
-
-    <aside class="sidebar">
-        <h2 style="color:var(--yellow); margin-bottom:40px;">TemGO Admin</h2>
-        <div class="nav-item active"><i class="fa-solid fa-satellite"></i> Monitoramento</div>
-        <div class="nav-item"><i class="fa-solid fa-users"></i> Passageiros</div>
-        <div class="nav-item"><i class="fa-solid fa-id-card"></i> Motoristas</div>
-        <div class="nav-item"><i class="fa-solid fa-wallet"></i> Financeiro</div>
-        <button onclick="location.reload()" style="background:none; border:1px solid #333; color:red; width:100%; padding:10px; border-radius:10px; margin-top:40px; cursor:pointer;">Encerrar</button>
-    </aside>
-
-    <main class="main">
-        <header>
-            <h1>Gestão Geral da Plataforma</h1>
-            <p style="color:#666">Monitoramento de frota e base de usuários em tempo real.</p>
-        </header>
-
-        <div class="grid-kpi">
-            <div class="kpi-card"><h3>Motoristas Online</h3><p>12</p></div>
-            <div class="kpi-card"><h3>Em Corrida agora</h3><p>05</p></div>
-            <div class="kpi-card"><h3>Passageiros Ativos</h3><p>1.240</p></div>
-            <div class="kpi-card"><h3>Créditos Totais</h3><p>R$ 4.250</p></div>
-        </div>
-
-        <div class="section">
-            <h2>Mapa de Monitoramento (Motoristas Online)</h2>
-            <div id="map-monitor"></div>
-        </div>
-
-        <div class="section">
-            <h2>Gestão de Motoristas</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Veículo / Placa</th>
-                        <th>Status</th>
-                        <th>Categoria</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Carlos Alberto Oliveira</td>
-                        <td>Toyota Corolla (ABC-1234)</td>
-                        <td><span class="badge online">ONLINE (LIVRE)</span></td>
-                        <td>TemGo Comum</td>
-                    </tr>
-                    <tr>
-                        <td>Fernando Souza Rocha</td>
-                        <td>Fiat Uno (TEM-2026)</td>
-                        <td><span class="badge busy">EM CORRIDA</span></td>
-                        <td>TemGo Comum</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="section">
-            <h2>Base de Clientes (Passageiros)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome do Cliente</th>
-                        <th>Celular</th>
-                        <th>Cidade</th>
-                        <th>Última Corrida</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Mariana Santos</td>
-                        <td>(44) 99888-0011</td>
-                        <td>Palotina, PR</td>
-                        <td>Hoje às 14:20</td>
-                    </tr>
-                    <tr>
-                        <td>João Paulo Farias</td>
-                        <td>(45) 99111-2233</td>
-                        <td>Cascavel, PR</td>
-                        <td>Ontem às 18:05</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-    <script>
-        // Inicializa o Mapa (Focado em Palotina/PR como exemplo)
-        var map = L.map('map-monitor').setView([-24.28, -53.84], 13);
-        
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: 'TemGo Maps'
-        }).addTo(map);
-
-        // Ícone Personalizado para o Motorista
-        var carIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<div style='background-color: #FFD700; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #000;'></div>",
-            iconSize: [15, 15],
-            iconAnchor: [7, 7]
-        });
-
-        // Simulação de Motoristas no Mapa
-        L.marker([-24.285, -53.842], {icon: carIcon}).addTo(map).bindPopup("<b>Motorista: Carlos</b><br>Status: Online");
-        L.marker([-24.278, -53.835], {icon: carIcon}).addTo(map).bindPopup("<b>Motorista: Fernando</b><br>Status: Em Corrida");
-    </script>
-</body>
-</html>
+    function aprovar(btn, nome) {
+        if(confirm("Deseja confirmar a ativação de " + nome + " na plataforma?")) {
+            const row = btn.closest('tr');
+            const statusBadge = row.querySelector('.credit-badge');
+            
+            // Simula a aprovação
+            statusBadge.innerText = "ATIVO / LIBERADO";
+            statusBadge.style.color = "#00ff00";
+            statusBadge.style.borderColor = "#00ff00";
+            
+            // Remove o botão de aprovação e deixa apenas um ícone de sucesso
+            btn.parentElement.innerHTML = '<span style="color:#00ff00; font-size:12px;">✓ Aprovado</span>';
+            
+            alert(nome + " agora está autorizado a realizar corridas!");
+        }
+    }
+</script>
