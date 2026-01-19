@@ -1,37 +1,24 @@
+<script>
 function validarFinal() {
     const digitado = document.getElementById('codigo-input').value;
     const correto = localStorage.getItem('codigo_ativo');
 
-    // Comparamos o código digitado com o gerado
     if (digitado == correto) {
-        
-        // 1. Salva os dados do cliente para que a tela de corrida saiba quem ele é
+        // Salva os dados para a próxima tela
         const dados = {
             nome: document.getElementById('nome').value,
             cpf: document.getElementById('cpf').value,
             tel: document.getElementById('tel').value,
             foto: localStorage.getItem('user_foto'),
-            verificado: true
+            selecionado: true 
         };
         localStorage.setItem('dados_cliente_temgo', JSON.stringify(dados));
 
-        // 2. REDIRECIONAMENTO REFORÇADO
-        // Tenta redirecionar de 3 formas diferentes para garantir que funcione em qualquer celular
-        
-        // Forma principal:
+        // Redirecionamento Direto
         window.location.href = "passageiro.html"; 
-
-        // Se falhar, tenta após 100ms (ajuda em servidores como o Render):
-        setTimeout(() => {
-            window.location.assign("./passageiro.html");
-        }, 100);
-
-        // Terceira tentativa caso as outras falhem:
-        setTimeout(() => {
-            window.location.replace("passageiro.html");
-        }, 300);
-
+        
     } else {
         alert("Código incorreto! Verifique seu e-mail.");
     }
 }
+</script>
