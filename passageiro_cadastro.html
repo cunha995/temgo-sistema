@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TemGo - Solicitar Viagem</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: sans-serif; background: #000; color: white; }
+        .mapa-fake { width: 100%; height: 60vh; background: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #444; font-size: 20px; }
+        .painel { padding: 20px; background: #050505; border-top: 2px solid #FFD700; border-radius: 20px 20px 0 0; margin-top: -20px; position: relative; }
+        .input-destino { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #121212; color: white; margin-bottom: 15px; box-sizing: border-box; }
+        .btn-chamar { width: 100%; padding: 20px; background: #FFD700; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; }
+        .user-info { display: flex; align-items: center; padding: 10px; margin-bottom: 15px; }
+        .user-foto { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #FFD700; margin-right: 12px; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <div class="mapa-fake">
+        <p>🗺️ Mapa de Palotina carregando...</p>
+    </div>
+
+    <div class="painel">
+        <div class="user-info">
+            <img id="minha-foto" class="user-foto" src="">
+            <div>
+                <span id="meu-nome" style="display: block; font-weight: bold;">Carregando...</span>
+                <span style="font-size: 12px; color: #FFD700;">Passageiro Verificado</span>
+            </div>
+        </div>
+
+        <input type="text" class="input-destino" placeholder="Para onde você quer ir?">
+        <button class="btn-chamar" onclick="solicitar()">SOLICITAR TEMGO</button>
+    </div>
+
+    <script>
+        // Carrega os dados salvos no cadastro
+        window.onload = function() {
+            const dados = JSON.parse(localStorage.getItem('dados_cliente_temgo'));
+            if (dados) {
+                document.getElementById('meu-nome').innerText = dados.nome;
+                if (dados.foto) {
+                    document.getElementById('minha-foto').src = dados.foto;
+                }
+            }
+        };
+
+        function solicitar() {
+            alert("Buscando motoristas TemGo próximos a você...");
+        }
+    </script>
+</body>
+</html>
