@@ -3,78 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemGo - Cadastro de Passageiro</title>
+    <title>TemGo - Cadastro e Termos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --yellow: #FFD700; --bg: #050505; --input: #121212; }
-        body { 
-            margin: 0; padding: 20px; font-family: 'Inter', sans-serif; 
-            background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; 
-        }
+        body { margin: 0; padding: 20px; font-family: 'Inter', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 400px; }
         
-        /* Foto de Perfil */
-        .profile-upload {
-            width: 120px; height: 120px; background: var(--input); border: 2px solid var(--yellow);
-            border-radius: 60px; margin: 0 auto 30px; position: relative;
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .profile-upload i { font-size: 40px; color: #333; }
-        .profile-upload input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        .profile-upload .plus-icon {
-            position: absolute; bottom: 5px; right: 5px; background: var(--yellow);
-            color: black; width: 30px; height: 30px; border-radius: 15px;
-            display: flex; align-items: center; justify-content: center; font-size: 18px;
-        }
-
+        /* Estilo do Formulário */
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: var(--yellow); font-size: 14px; font-weight: 600; }
-        input {
-            width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #222;
-            background: var(--input); color: white; box-sizing: border-box; font-size: 16px;
-        }
-        input:focus { border-color: var(--yellow); outline: none; }
+        input { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #222; background: var(--input); color: white; box-sizing: border-box; }
 
-        .btn-finish {
-            width: 100%; padding: 18px; background: var(--yellow); color: black;
-            border: none; border-radius: 12px; font-weight: bold; font-size: 16px;
-            cursor: pointer; margin-top: 10px; text-transform: uppercase;
+        /* Estilo do Modal de Termos */
+        #termos-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
         }
+        .modal-content {
+            background: #181818; width: 90%; max-width: 350px; padding: 25px; border-radius: 20px;
+            border: 1px solid var(--yellow); max-height: 80vh; overflow-y: auto;
+        }
+        .texto-termo { font-size: 13px; color: #bbb; line-height: 1.6; height: 200px; overflow-y: scroll; background: #000; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        
+        .btn-aceitar { width: 100%; padding: 15px; background: var(--yellow); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        
+        .checkbox-group { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #888; margin-top: 15px; }
+        .checkbox-group input { width: auto; margin-top: 3px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <header style="text-align: center; margin-bottom: 40px;">
+        <header style="text-align: center; margin-bottom: 30px;">
             <h1 style="color: var(--yellow); margin: 0;">TemGO</h1>
-            <p style="color: #888;">Crie seu perfil de passageiro</p>
+            <p style="color: #888;">Cadastro de Passageiro</p>
         </header>
 
-        <form onsubmit="event.preventDefault(); window.location.href='index.html'">
-            <div class="profile-upload">
-                <i class="fa-solid fa-user"></i>
-                <div class="plus-icon"><i class="fa-solid fa-camera" style="font-size: 14px; color: black;"></i></div>
-                <input type="file" accept="image/*" capture="camera" required title="Foto de perfil é obrigatória">
-            </div>
-
+        <form onsubmit="event.preventDefault(); abrirTermos();">
             <div class="form-group">
                 <label>Nome Completo</label>
-                <input type="text" placeholder="Seu nome" required>
+                <input type="text" placeholder="Nome" required>
             </div>
-
             <div class="form-group">
                 <label>CPF</label>
-                <input type="text" placeholder="000.000.000-00" id="cpf" required>
+                <input type="text" placeholder="000.000.000-00" required>
             </div>
-
             <div class="form-group">
-                <label>Número de Telefone</label>
-                <input type="text" placeholder="(00) 00000-0000" id="phone" required>
+                <label>Celular</label>
+                <input type="text" placeholder="(00) 00000-0000" required>
             </div>
 
-            <button type="submit" class="btn-finish">CONCLUIR E SOLICITAR</button>
+            <div class="checkbox-group">
+                <input type="checkbox" id="check-termos" required>
+                <label for="check-termos">Estou ciente e concordo com os Termos de Responsabilidade da TemGo.</label>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 18px; background: var(--yellow); color: black; border: none; border-radius: 12px; font-weight: bold; margin-top: 20px; cursor: pointer;">
+                AVANÇAR
+            </button>
         </form>
     </div>
 
+    <div id="termos-modal">
+        <div class="modal-content">
+            <h2 style="color: var(--yellow); margin-top: 0;">Termo de Uso</h2>
+            <div class="texto-termo">
+                <b>1. Responsabilidade do Passageiro:</b> O usuário compromete-se a portar-se com respeito, não danificar o veículo e pagar o valor acordado.<br><br>
+                <b>2. Segurança:</b> O passageiro autoriza o compartilhamento de sua localização e foto com o motorista para fins de segurança.<br><br>
+                <b>3. Cancelamentos:</b> Taxas podem ser aplicadas em caso de cancelamentos excessivos.<br><br>
+                <b>4. Dados Pessoais:</b> A TemGo protege seus dados e não os compartilha com terceiros para fins comerciais.<br><br>
+                <b>5. Objetos Esquecidos:</b> A plataforma não se responsabiliza por objetos deixados no veículo, mas facilitará o contato com o motorista.
+            </div>
+            <button class="btn-aceitar" onclick="finalizarCadastro()">CONCORDO E QUERO VIAJAR</button>
+        </div>
+    </div>
+
+    <script>
+        function abrirTermos() {
+            document.getElementById('termos-modal').style.display = 'flex';
+        }
+
+        function finalizarCadastro() {
+            alert('Cadastro Concluído! Bem-vindo à TemGo.');
+            window.location.href = 'passageiro.html';
+        }
+    </script>
 </body>
 </html>
