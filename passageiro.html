@@ -2,69 +2,79 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TemGo - Passageiro</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TemGo - Cadastro de Passageiro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background: #121212; }
+        :root { --yellow: #FFD700; --bg: #050505; --input: #121212; }
+        body { 
+            margin: 0; padding: 20px; font-family: 'Inter', sans-serif; 
+            background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; 
+        }
+        .container { width: 100%; max-width: 400px; }
         
-        /* Cabeçalho */
-        .header {
-            height: 15vh; background: #1a1a1a; display: flex; align-items: center;
-            justify-content: center; border-bottom: 2px solid #FFD700;
+        /* Foto de Perfil */
+        .profile-upload {
+            width: 120px; height: 120px; background: var(--input); border: 2px solid var(--yellow);
+            border-radius: 60px; margin: 0 auto 30px; position: relative;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
-        .logo-text { color: #FFD700; font-size: 24px; font-weight: bold; margin: 0; }
+        .profile-upload i { font-size: 40px; color: #333; }
+        .profile-upload input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        .profile-upload .plus-icon {
+            position: absolute; bottom: 5px; right: 5px; background: var(--yellow);
+            color: black; width: 30px; height: 30px; border-radius: 15px;
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
 
-        /* Área do Mapa */
-        #map { height: 60vh; width: 100%; background: #242424; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: var(--yellow); font-size: 14px; font-weight: 600; }
+        input {
+            width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #222;
+            background: var(--input); color: white; box-sizing: border-box; font-size: 16px;
+        }
+        input:focus { border-color: var(--yellow); outline: none; }
 
-        /* Painel Inferior */
-        .ui-panel {
-            height: 25vh; background: #1e1e1e; padding: 15px;
-            display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.5); border-radius: 20px 20px 0 0;
-        }
-        .search-box {
-            width: 90%; padding: 15px; border-radius: 10px; border: none;
-            background: #333; color: white; margin-bottom: 15px; font-size: 16px;
-        }
-        .btn-request {
-            width: 90%; padding: 18px; background: #FFD700; color: #000;
-            border: none; border-radius: 12px; font-weight: bold; font-size: 18px;
-            text-transform: uppercase; cursor: pointer;
+        .btn-finish {
+            width: 100%; padding: 18px; background: var(--yellow); color: black;
+            border: none; border-radius: 12px; font-weight: bold; font-size: 16px;
+            cursor: pointer; margin-top: 10px; text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <p class="logo-text">TemGO</p>
+    <div class="container">
+        <header style="text-align: center; margin-bottom: 40px;">
+            <h1 style="color: var(--yellow); margin: 0;">TemGO</h1>
+            <p style="color: #888;">Crie seu perfil de passageiro</p>
+        </header>
+
+        <form onsubmit="event.preventDefault(); window.location.href='index.html'">
+            <div class="profile-upload">
+                <i class="fa-solid fa-user"></i>
+                <div class="plus-icon"><i class="fa-solid fa-camera" style="font-size: 14px; color: black;"></i></div>
+                <input type="file" accept="image/*" capture="camera" required title="Foto de perfil é obrigatória">
+            </div>
+
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" placeholder="Seu nome" required>
+            </div>
+
+            <div class="form-group">
+                <label>CPF</label>
+                <input type="text" placeholder="000.000.000-00" id="cpf" required>
+            </div>
+
+            <div class="form-group">
+                <label>Número de Telefone</label>
+                <input type="text" placeholder="(00) 00000-0000" id="phone" required>
+            </div>
+
+            <button type="submit" class="btn-finish">CONCLUIR E SOLICITAR</button>
+        </form>
     </div>
 
-    <div id="map"></div>
-
-    <div class="ui-panel">
-        <input type="text" class="search-box" placeholder="Para onde vamos?">
-        <button class="btn-request" onclick="alert('Buscando motoristas próximos...')">SOLICITAR TEMGO</button>
-    </div>
-
-    <script>
-        // Inicializa o mapa focado no Brasil (Brasília)
-        var map = L.map('map').setView([-15.7938, -47.8827], 13);
-
-        // Usa o visual "Dark Mode" do mapa
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Tenta localizar o usuário
-        map.locate({setView: true, maxZoom: 16});
-
-        function onLocationFound(e) {
-            L.marker(e.latlng).addTo(map).bindPopup("Você está aqui").openPopup();
-        }
-        map.on('locationfound', onLocationFound);
-    </script>
 </body>
 </html>
