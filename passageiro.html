@@ -9,8 +9,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
        (function(){
-          // ATENÇÃO: Substitua 'SUA_PUBLIC_KEY_AQUI' pela chave que está em Account > Public Key no EmailJS
-          emailjs.init("SUA_PUBLIC_KEY_AQUI");
+          // Sua Chave Pública real identificada na imagem 1000506880.jpg
+          emailjs.init("yTaC6x7E7XeVv4Am3");
        })();
     </script>
 
@@ -46,89 +46,22 @@
                 <img id="img-user">
                 <input type="file" accept="image/*" capture="camera" required onchange="previewFoto(this)">
             </div>
-
             <div class="form-group"><label>Nome Completo</label><input type="text" id="nome" required></div>
             <div class="form-group"><label>CPF</label><input type="text" id="cpf" placeholder="000.000.000-00" required></div>
             <div class="form-group"><label>E-mail</label><input type="email" id="email" required></div>
             <div class="form-group"><label>Celular</label><input type="tel" id="tel" placeholder="(00) 00000-0000" required></div>
-
             <button type="submit" class="btn-principal">AVANÇAR</button>
         </form>
     </div>
 
     <div id="modal-termos" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="color: var(--yellow);">Termo de Uso</h2>
-            <p style="text-align: left; font-size: 13px; color: #bbb;">Concordo que meus dados e foto sejam usados para identificação nas corridas da TemGo.</p>
+            <h2 style="color: var(--yellow);">Termos de Uso</h2>
+            <p style="text-align: left; font-size: 13px; color: #bbb;">Aceito que meus dados sejam validados para segurança das viagens.</p>
             <button class="btn-principal" onclick="dispararEmail()">ACEITAR E ENVIAR CÓDIGO</button>
         </div>
     </div>
 
     <div id="modal-codigo" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="color: var(--yellow);">Verificação</h2>
-            <p style="color: #888;">Digite o código enviado para seu e-mail.</p>
-            <div class="code-group">
-                <input type="text" maxlength="1" class="code-in">
-                <input type="text" maxlength="1" class="code-in">
-                <input type="text" maxlength="1" class="code-in">
-                <input type="text" maxlength="1" class="code-in">
-            </div>
-            <button class="btn-principal" onclick="confirmarCodigo()">VALIDAR E ENTRAR</button>
-        </div>
-    </div>
-
-    <script>
-        function previewFoto(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('img-user').src = e.target.result;
-                    document.getElementById('img-user').style.display = 'block';
-                    document.getElementById('icon-cam').style.display = 'none';
-                    localStorage.setItem('temp_foto', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function abrirModalTermos() { document.getElementById('modal-termos').style.display = 'flex'; }
-
-        function dispararEmail() {
-            const codigo = Math.floor(1000 + Math.random() * 9000);
-            localStorage.setItem('codigo_ativo', codigo);
-
-            const params = {
-                to_name: document.getElementById('nome').value,
-                to_email: document.getElementById('email').value,
-                codigo: codigo
-            };
-
-            // Usando o seu Service ID: service_djujbji
-            emailjs.send('service_djujbji', 'SEU_TEMPLATE_ID', params)
-                .then(() => {
-                    alert("Código enviado!");
-                    document.getElementById('modal-termos').style.display = 'none';
-                    document.getElementById('modal-codigo').style.display = 'flex';
-                }, (err) => {
-                    alert("Erro ao enviar. Verifique sua chave pública.");
-                });
-        }
-
-        function confirmarCodigo() {
-            let digitado = "";
-            document.querySelectorAll('.code-in').forEach(i => digitado += i.value);
-            
-            if (digitado === localStorage.getItem('codigo_ativo')) {
-                // Salva o cadastro final
-                const finalUser = { nome: document.getElementById('nome').value, verificado: true };
-                localStorage.setItem('usuarioTemGo', JSON.stringify(finalUser));
-                
-                window.location.replace("passageiro.html");
-            } else {
-                alert("Código inválido!");
-            }
-        }
-    </script>
-</body>
-</html>
+            <h2 style="
