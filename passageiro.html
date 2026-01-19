@@ -1,48 +1,89 @@
-<script>
-function enviarCodigoEmail() {
-    // 1. Captura os dados do formulário
-    const emailCliente = document.getElementById('email').value;
-    const nomeCliente = document.getElementById('nome').value;
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TemGo - Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    // 2. Cria o código de 4 dígitos e salva para conferir depois
-    const codigoSorteado = Math.floor(1000 + Math.random() * 9000);
-    localStorage.setItem('codigo_ativo', codigoSorteado);
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("yTaC6x7E7XeVv4Am3"); // Sua chave pública
+       })();
+    </script>
 
-    // 3. Monta os parâmetros EXATAMENTE como estão no seu template
-    const templateParams = {
-        email: emailCliente, // Deve ser igual ao {{email}} da sua imagem
-        to_name: nomeCliente,
-        message: "Seu código de acesso TemGo é: " + codigoSorteado
-    };
+    <style>
+        :root { --yellow: #FFD700; --bg: #050505; }
+        body { margin: 0; padding: 20px; font-family: sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 400px; text-align: center; }
+        .logo { color: var(--yellow); font-size: 32px; font-weight: bold; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 5px; color: var(--yellow); font-weight: bold; }
+        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #333; background: #121212; color: white; box-sizing: border-box; }
+        .btn { width: 100%; padding: 18px; background: var(--yellow); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #181818; width: 80%; padding: 30px; border-radius: 20px; border: 1px solid var(--yellow); text-align: center; }
+    </style>
+</head>
+<body>
 
-    // 4. ENVIO REAL (Usando o Service ID da sua imagem)
-    // IMPORTANTE: Mude 'SEU_TEMPLATE_ID' pelo ID que aparece na lista do EmailJS
-    emailjs.send('service_djujbji', 'SEU_TEMPLATE_ID', templateParams)
-        .then(function(response) {
-           console.log('SUCESSO!', response.status, response.text);
-           alert("Código enviado com sucesso!");
-           // Abre o modal de verificação para destravar a tela
-           document.getElementById('modal-codigo').style.display = 'flex';
-        })
-        .catch(function(error) {
-           console.error('FALHA NO ENVIO...', error);
-           alert("Erro ao enviar e-mail: " + JSON.stringify(error));
-           // Mesmo com erro, vamos abrir o modal para você não ficar travado no teste
-           document.getElementById('modal-codigo').style.display = 'flex';
-        });
-}
+    <div class="container">
+        <div class="logo">TemGO</div>
+        <form onsubmit="enviarCodigo(); return false;">
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="nome" required>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="email" required>
+            </div>
+            <button type="submit" class="btn">AVANÇAR</button>
+        </form>
+    </div>
 
-function validarCodigo() {
-    const digitado = document.getElementById('codigo-input').value;
-    const correto = localStorage.getItem('codigo_ativo');
+    <div id="modal-codigo" class="modal">
+        <div class="modal-content">
+            <h2 style="color: var(--yellow);">Verificação</h2>
+            <p>Introduza o código enviado para o seu e-mail.</p>
+            <input type="text" id="codigo-input" maxlength="4" style="width: 100px; text-align: center; font-size: 24px;">
+            <button class="btn" onclick="validar()">CONFIRMAR</button>
+        </div>
+    </div>
 
-    if (digitado == correto) {
-        // Salva que o usuário está logado
-        localStorage.setItem('usuario_logado', 'true');
-        // Redireciona para o mapa
-        window.location.replace("passageiro.html");
-    } else {
-        alert("Código inválido! Tente novamente.");
-    }
-}
-</script>
+    <script>
+        function enviarCodigo() {
+            const n = document.getElementById('nome').value;
+            const e = document.getElementById('email').value;
+            const cod = Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('temp_cod', cod);
+
+            const params = {
+                email: e, // Vinculado ao {{email}} no seu template
+                to_name: n,
+                message: "O seu código TemGo é: " + cod
+            };
+
+            // Substitua 'template_id_aqui' pelo ID que aparece no seu EmailJS
+            emailjs.send('service_djujbji', 'template_id_aqui', params)
+                .then(function() {
+                    document.getElementById('modal-codigo').style.display = 'flex';
+                })
+                .catch(function(err) {
+                    alert("Erro ao enviar. Verifique o Template ID.");
+                    document.getElementById('modal-codigo').style.display = 'flex';
+                });
+        }
+
+        function validar() {
+            const digitado = document.getElementById('codigo-input').value;
+            if (digitado == localStorage.getItem('temp_cod')) {
+                window.location.replace("passageiro.html"); // Redireciona para o mapa
+            } else {
+                alert("Código errado!");
+            }
+        }
+    </script>
+</body>
+</html>
